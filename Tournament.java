@@ -1,25 +1,17 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gametheory.snowball.*;
 
 
 public class Tournament {
     public static void main(String[] args) {
-        System.out.println(tournament()); 
+        tournament();
     }
 
-    static String tournament() {
-        List<String> players = new ArrayList<String>();
-
-        agent_smart_3 as3 = new agent_smart_3();
-        AndreyStarodumov as1 = new AndreyStarodumov();
-        agent_smart_5 as5 = new agent_smart_5();
-
-        players.add("as3");
-        players.add("as5");
-        players.add("as1");
-
+    static int one_battle(smart_agent player1, smart_agent player2) {
         int player1balls = 100;
         int player2balls = 100;
         int minutesPassedAfter1Shot = -1;
@@ -27,7 +19,6 @@ public class Tournament {
         int p1_p2 = 0;
         int p2_p1 = 0;
 
-        //TODO: player1, player2 add
         for (int i = 0; i < 60; i++) {
             minutesPassedAfter1Shot += 1;
             minutesPassedAfter2Shot += 1;
@@ -56,7 +47,31 @@ public class Tournament {
             player2balls += p1_p2;
             player2balls += 1;
         }
+        
+        String output = String.format("player(%d) has %d snowballs, player(%d) has %d snowballs", player1.howMuchCount, player1balls, player2.howMuchCount, player2balls);
+        System.out.println(output);
+        return player1balls - player2balls;
+    }
 
-        return String.format("First player has %d snowballs, Second player has %d snowballs", player1balls, player2balls);
+    static void tournament() {
+        Map<String, smart_agent> playersMap = new  HashMap<>();
+        String keys[] = new String[10]; 
+        for (int i = 1; i < 11; i++) {
+            String name = String.format("sa%d", i);
+            playersMap.put(name, new smart_agent(i));
+            keys[i - 1] = name;
+        }
+
+        for (int i = 0; i < keys.length; i++) {
+            for (int j = 0; j < keys.length; j++) {
+                if (i == j) {
+                    continue;
+                }
+                playersMap.get(keys[i]).reset();
+                playersMap.get(keys[j]).reset();
+                one_battle(playersMap.get(keys[i]), playersMap.get(keys[j]));
+            }
+        }
+
     }
 }
