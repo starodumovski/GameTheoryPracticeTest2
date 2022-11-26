@@ -1,21 +1,12 @@
 package gametheory.snowball;
 
-public class smart_agent {  
-    int countMinutes = 0;
-    int maxRoundMinutes = 60;
-    public int howMuchCount = 3;
-
-    public smart_agent(int howMuchCount) {
-        this.howMuchCount = howMuchCount;
-    }
+public interface Player {
 
     /**
      * This method is called to reset the agent before the match
      * with each player containing several rounds
      */
-    public void reset() {
-        countMinutes = 0;
-    };
+    void reset();
 
     /**
      * This method returns the number of snowballs the player will shoot
@@ -33,19 +24,8 @@ public class smart_agent {
      * @return                            the number of snowballs the player
      *                                    will shoot to opponent's field
      */
-    public int shootToOpponentField(int opponentLastShotToYourField, int snowballNumber,
-                             int minutesPassedAfterYourShot) {
-                                
-        countMinutes += 1;
-        if (countMinutes % howMuchCount == 0) {
-            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
-        }
-        if (countMinutes == maxRoundMinutes) {
-            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
-        }
-        return (0);
-        
-    };
+    int shootToOpponentField(int opponentLastShotToYourField, int snowballNumber,
+                             int minutesPassedAfterYourShot);
 
     /**
      * This method returns the number of snowballs the player will shoot
@@ -62,19 +42,15 @@ public class smart_agent {
      *                                    (0 – if this is the first shot)
      * @return the number of snowballs the player will shoot to hot field
      */
-    public int shootToHotField(int opponentLastShotToYourField, int snowballNumber,
-                        int minutesPassedAfterYourShot) {
-        return (0);
-    };
+    int shootToHotField(int opponentLastShotToYourField, int snowballNumber,
+                        int minutesPassedAfterYourShot);
 
     /**
      * This method returns your Innopolis email
      *
      * @return your Innopolis email
      */
-    public String getEmail() {
-        return ("a.starodumov@innopolis.university");
-    };
+    String getEmail();
 
     /**
      * This default method calculates the maximum number of snowballs
@@ -87,7 +63,7 @@ public class smart_agent {
      * @return the maximum number of snowballs which can be shot by a player
      *         per minute
      */
-    public static int maxSnowballsPerMinute(int minutesPassedAfterYourShot) {
+    default int maxSnowballsPerMinute(int minutesPassedAfterYourShot) {
         double exp = Math.exp(minutesPassedAfterYourShot);
         return (int) (15 * exp / (15 + exp));
     }
