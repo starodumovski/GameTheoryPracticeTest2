@@ -10,7 +10,7 @@ import gametheory.snowball.students2022.*;;
 
 public class Tournament {
     public static void main(String[] args) {
-        tournament();
+        tournament(new ArrayList<Integer>(Arrays.asList(2, 0, 10, 0, 0, 0, 0, 0, 0)));
     }
 
     static ArrayList<Integer> one_battle(AndreyStarodumovCode player1, AndreyStarodumovCode player2) {
@@ -55,9 +55,12 @@ public class Tournament {
         return new ArrayList<Integer>(Arrays.asList(player1balls, player2balls));
     }
 
-    static void tournament() {
-        int amount_of_players = 11;
-        Map<String, AndreyStarodumovCode> playersMap = new  HashMap<>();
+    static void tournament(ArrayList<Integer> eachPlayer) {
+        int amount_of_players = 0;
+        for (int i = 0; i < eachPlayer.size(); i++) {
+            amount_of_players += eachPlayer.get(i);
+        }
+        Map<String, AndreyStarodumovCode> playersMap = new HashMap<>();
         String keys[] = new String[amount_of_players]; 
         int tournamentTable[][] = new int[amount_of_players][amount_of_players];
 
@@ -67,17 +70,18 @@ public class Tournament {
             }
         }
 
-        for (int i = 0; i < 11; i++) {
-            String name = String.format("sa%d", i);
-            playersMap.put(name, new AndreyStarodumovCode(i));
-            keys[i] = name;
+        int idx = 0;
+        for (int i = 0; i < eachPlayer.size(); i++) {
+            for (int j = 0; j < eachPlayer.get(i); j++) {
+                String name = String.format("sa%d", i * eachPlayer.get(i) + j);
+                playersMap.put(name, new AndreyStarodumovCode(i));
+                keys[idx + j] = name;
+            }
+            idx += eachPlayer.get(i);
         }
 
         for (int i = 0; i < keys.length; i++) {
-            for (int j = i; j < keys.length; j++) {
-                if (i == j) {
-                    continue;
-                }
+            for (int j = i + 1; j < keys.length; j++) {
                 playersMap.get(keys[i]).reset();
                 playersMap.get(keys[j]).reset();
                 ArrayList<Integer> result = one_battle(playersMap.get(keys[i]), playersMap.get(keys[j]));
@@ -90,6 +94,14 @@ public class Tournament {
                 System.out.print(is2 + "\t");
             }
             System.out.println();
+        }
+        System.out.println("*********************************************");
+        for (int[] is : tournamentTable) {
+            int tmpSum = 0;
+            for (int is2 : is) {
+                tmpSum += is2;
+            }
+            System.out.println(tmpSum);
         }
     }
 }

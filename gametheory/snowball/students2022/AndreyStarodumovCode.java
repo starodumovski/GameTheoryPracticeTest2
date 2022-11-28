@@ -37,15 +37,23 @@ public class AndreyStarodumovCode implements Player {
      *                      before agent will shoot 
      */
     public AndreyStarodumovCode(int howMuchCount) {
+        this.howMuchCount = howMuchCount;
         if (howMuchCount == 0) {
             waitAndBeat = true;
             wait = true;
+            this.howMuchCount = 4;
         }
-        this.howMuchCount = howMuchCount;
         countMinutes = 0;
         maxRoundMinutes = 60;
     }
 
+
+    int makeShot(int minutesPassedAfterYourShot, int snowballNumber) {
+        if ((countMinutes % howMuchCount == 0) || (countMinutes == maxRoundMinutes)) {
+            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
+        }
+        return (0);
+    }
     /**
      * 
      */
@@ -53,7 +61,7 @@ public class AndreyStarodumovCode implements Player {
     public void reset() {
         this.countMinutes = 0;
         // temporary
-        if (wait) {this.waitAndBeat = true; this.howMuchCount = 0;}
+        if (wait) {this.waitAndBeat = true;}
         else {this.waitAndBeat = false;}
     }
 
@@ -64,21 +72,14 @@ public class AndreyStarodumovCode implements Player {
     public int shootToOpponentField(int opponentLastShotToYourField, int snowballNumber,
             int minutesPassedAfterYourShot) {
         countMinutes += 1;
-        if (waitAndBeat == true) {
+        if (waitAndBeat) {
             if (opponentLastShotToYourField == 0) {
                 return 0;
             } else {
                 this.waitAndBeat = false;
-                this.howMuchCount = 4;
             }
         }
-        if (countMinutes % howMuchCount == 0) {
-            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
-        }
-        if (countMinutes == maxRoundMinutes) {
-            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
-        }
-        return (0);
+        return makeShot(minutesPassedAfterYourShot, snowballNumber);
     }
 
     /**
@@ -86,8 +87,8 @@ public class AndreyStarodumovCode implements Player {
      */
     @Override
     public int shootToHotField(int opponentLastShotToYourField, int snowballNumber, int minutesPassedAfterYourShot) {
-        if (waitAndBeat == true) {
-            return (Math.min(maxSnowballsPerMinute(minutesPassedAfterYourShot), snowballNumber));
+        if (waitAndBeat) {
+            return makeShot(minutesPassedAfterYourShot, snowballNumber);
         }
         return 0;
     }
