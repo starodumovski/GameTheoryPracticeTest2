@@ -10,7 +10,30 @@ import gametheory.snowball.students2022.*;;
 
 public class Tournament {
     public static void main(String[] args) {
-        tournament(new ArrayList<Integer>(Arrays.asList(2, 0, 10, 0, 0, 0, 0, 0, 0)));
+        
+        AndreyStarodumovCode checker = new AndreyStarodumovCode();
+        for (int i = 0; i < 20; i++) {
+            System.out.print(checker.maxSnowballsPerMinute(i) + " ");
+        }
+        System.out.println();
+        // System.out.println(one_battle(new AndreyStarodumovCode(0), new AndreyStarodumovCode(4)));
+        Map<Integer, Integer> players = new HashMap<Integer, Integer>()
+        {
+            {
+                // put(-1, 1);
+                put(4, 60);
+        
+                put(0, 2);
+                // put(1, 5);
+                // put(5, 13);
+                // put(6, 6);
+                // put(7, 9);
+                // put(2, 6);
+                // put(8, 3);
+                // put(9, 10);
+            }
+        };
+        tournament(players);
     }
 
     static ArrayList<Integer> one_battle(AndreyStarodumovCode player1, AndreyStarodumovCode player2) {
@@ -51,33 +74,37 @@ public class Tournament {
         }
         
         String output = String.format("player(%d) has %d snowballs, player(%d) has %d snowballs", player1.howMuchCount, player1balls, player2.howMuchCount, player2balls);
-        System.out.println(output);
+        // System.out.println(output);
         return new ArrayList<Integer>(Arrays.asList(player1balls, player2balls));
     }
 
-    static void tournament(ArrayList<Integer> eachPlayer) {
+    static void tournament(Map<Integer, Integer> eachPlayer) {
         int amount_of_players = 0;
-        for (int i = 0; i < eachPlayer.size(); i++) {
-            amount_of_players += eachPlayer.get(i);
-        }
         Map<String, AndreyStarodumovCode> playersMap = new HashMap<>();
+        
+        /* amount */ 
+        for (int key : eachPlayer.keySet()) {
+            amount_of_players += eachPlayer.get(key);
+        }
+
         String keys[] = new String[amount_of_players]; 
         int tournamentTable[][] = new int[amount_of_players][amount_of_players];
-
+        
         for (int i = 0; i < tournamentTable.length; i++) {
             for (int j = 0; j < tournamentTable.length; j++) {
                 tournamentTable[i][j] = 0;
             }
         }
 
-        int idx = 0;
-        for (int i = 0; i < eachPlayer.size(); i++) {
-            for (int j = 0; j < eachPlayer.get(i); j++) {
-                String name = String.format("sa%d", i * eachPlayer.get(i) + j);
-                playersMap.put(name, new AndreyStarodumovCode(i));
-                keys[idx + j] = name;
+        int keys_idx = 0;
+        System.out.println(eachPlayer.entrySet());
+        for (var entry : eachPlayer.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                String name = String.format("sa%d_%d", entry.getKey(), keys_idx + i);
+                playersMap.put(name, new AndreyStarodumovCode(entry.getKey()));
+                keys[keys_idx + i] = name;
             }
-            idx += eachPlayer.get(i);
+            keys_idx += entry.getValue();
         }
 
         for (int i = 0; i < keys.length; i++) {
@@ -96,12 +123,14 @@ public class Tournament {
             System.out.println();
         }
         System.out.println("*********************************************");
+        int counter = 0;
         for (int[] is : tournamentTable) {
             int tmpSum = 0;
             for (int is2 : is) {
                 tmpSum += is2;
             }
-            System.out.println(tmpSum);
+            System.out.println(keys[counter] + ": " + tmpSum);
+            counter += 1;
         }
     }
 }
