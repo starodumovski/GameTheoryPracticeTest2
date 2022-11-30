@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gametheory.snowball.Player;
-
+import gametheory.snowball.students2022.AndreyStarodumovCode;
 
 /**
  * Test class for tournaments and results
@@ -64,8 +64,8 @@ public class AndreyStarodumovTesting {
          * key=1, key=2, ... for NMP Agents
          */
         return new HashMap<Integer, Integer>() {{   
-            put(-1, 3);
-            put(4, 20);
+            put(-1, 2);
+            put(4, 6);
             put(0, 2);
             // put(5, 13);
         }};
@@ -78,7 +78,7 @@ public class AndreyStarodumovTesting {
      * @param player2 Agent to play
      * @return [snowballsRestForFirstPlayer, snowballsRestForSecondPlayer]
      */
-    static ArrayList<Integer> oneBattle(TestAgent player1, TestAgent player2) {
+    static ArrayList<Integer> oneBattle(Player player1, Player player2) {
         int player1balls = 100;
         int player2balls = 100;
         int minutesPassedAfter1Shot = -1;
@@ -127,7 +127,7 @@ public class AndreyStarodumovTesting {
      */
     static void tournament(Map<Integer, Integer> eachPlayer) {
         int amount_of_players = 0;
-        Map<String, TestAgent> playersMap = new HashMap<>();
+        Map<String, Player> playersMap = new HashMap<>();
         
         // amount counting
         for (int key : eachPlayer.keySet()) {
@@ -148,7 +148,13 @@ public class AndreyStarodumovTesting {
         for (var entry : eachPlayer.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
                 String name = String.format("sa%d_%d", entry.getKey(), keys_idx + i);
-                playersMap.put(name, new TestAgent(entry.getKey()));
+                if (entry.getKey() == -1) {
+                    playersMap.put(name, new AndreyStarodumovCode());
+                    System.out.println("Here AndrewStarodumovCode created");
+                } else {
+                    playersMap.put(name, new TestAgent(entry.getKey()));
+                }
+                
                 keys[keys_idx + i] = name;
             }
             keys_idx += entry.getValue();
